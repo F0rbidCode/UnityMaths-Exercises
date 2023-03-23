@@ -39,10 +39,12 @@ public class MathsUtils : MonoBehaviour {
         float distance = toTarget.magnitude; // sqrt(x*x + y*y + z*z)
 
         //get the angle to target
-        float dot = (origin.x * toTarget.x) + (origin.y * toTarget.y) + (origin.z * toTarget.z);
-        float angleToTarget = (Vector3.Dot(origin, toTarget) / (origin.magnitude * toTarget.magnitude));
-        angleToTarget = Mathf.Acos(angleToTarget)* 180 / Mathf.PI;
-        //float angleToTarget =  Vector3.Angle(origin, toTarget);
+        float dot = (origin.x * toTarget.x) + (origin.y * toTarget.y) + (origin.z * toTarget.z); 
+
+        //float angleToTarget = (Vector3.Dot(origin, toTarget) / (origin.magnitude * toTarget.magnitude));
+        //angleToTarget = Mathf.Acos(angleToTarget)* 180 / Mathf.PI;
+        float angleToTarget =  Vector3.Angle(origin, toTarget);
+
         if (distance < range && distance > 0)
         {
             if (angleToTarget < (angle))                
@@ -70,10 +72,10 @@ public class MathsUtils : MonoBehaviour {
 
         //get the angle to target
         //float dot = (origin.x * toTarget.x) + (origin.y * toTarget.y) + (origin.z * toTarget.z);
-        float angleToTarget = (Vector3.Dot(origin, toTarget) / (origin.magnitude * toTarget.magnitude));
-        angleToTarget = Mathf.Acos(angleToTarget) * 180 / Mathf.PI;
-        //float angleToTarget =  Vector3.Angle(origin, toTarget);
-        if (distance < range && distance > 0)
+        //float angleToTarget = (Vector3.Dot(origin, toTarget) / (origin.magnitude * toTarget.magnitude));
+        //angleToTarget = Mathf.Acos(angleToTarget) * 180 / Mathf.PI;
+        float angleToTarget =  Vector3.Angle(origin, toTarget);
+        if (distance < range && distance > coneOffset)
         {
             if (angleToTarget < (angle))
             { return true; }
