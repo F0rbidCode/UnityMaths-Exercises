@@ -47,7 +47,7 @@ public class MathsUtils : MonoBehaviour {
 
         if (distance < range && distance > 0)
         {
-            if (angleToTarget < (angle))                
+            if (angleToTarget < (angle/2.0f))                
             { return true; }
             return false;
         }
