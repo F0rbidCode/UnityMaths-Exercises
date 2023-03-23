@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -44,7 +45,7 @@ public class MathsUtils : MonoBehaviour {
         //float angleToTarget =  Vector3.Angle(origin, toTarget);
         if (distance < range && distance > 0)
         {
-            if (angleToTarget < (angle / 2))                
+            if (angleToTarget < (angle))                
             { return true; }
             return false;
         }
@@ -52,6 +53,36 @@ public class MathsUtils : MonoBehaviour {
         {
             return false;
         }    
+    }
+
+    public static bool IsInConePro(Vector3 position, Vector3 origin, Vector3 forward, float angle, float range, float coneOffset)
+    {
+
+        //move the origin back by the offset
+        origin.z -= coneOffset;
+        //increase the range by the offset
+        range += coneOffset;
+
+        //get vector to target
+        Vector3 toTarget = position - origin;
+        //get the distance to target
+        float distance = toTarget.magnitude; // sqrt(x*x + y*y + z*z)
+
+        //get the angle to target
+        //float dot = (origin.x * toTarget.x) + (origin.y * toTarget.y) + (origin.z * toTarget.z);
+        float angleToTarget = (Vector3.Dot(origin, toTarget) / (origin.magnitude * toTarget.magnitude));
+        angleToTarget = Mathf.Acos(angleToTarget) * 180 / Mathf.PI;
+        //float angleToTarget =  Vector3.Angle(origin, toTarget);
+        if (distance < range && distance > 0)
+        {
+            if (angleToTarget < (angle))
+            { return true; }
+            return false;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public static bool IsInCylinder(Vector3 position, Vector3 origin, Vector3 forward, float radius, float range) {
@@ -63,11 +94,15 @@ public class MathsUtils : MonoBehaviour {
         //get the distance on 'z' axis away from user
         float toPosZ = position.z - origin.z;
         //get the distance on 'y' axis away from user
+        float toPosX = position.x - origin.x;
         float toPosY = position.y - origin.y;
+
+        
+        Vector2 toTarget = new Vector2(toPosX, toPosY);
 
         if(toPosZ < range && toPosZ > 0)
         {
-            if(toPosY < radius/2 && toPosY > 0)
+            if(toTarget.magnitude < radius)
             {
                 return true;
             }

@@ -6,6 +6,7 @@ public class FireBreath : MonoBehaviour
 {
     ParticleSystem particles;
     public bool isCylinder = false;
+    public float offset;
     
     // Start is called before the first frame update
     void Start(){
@@ -46,7 +47,10 @@ public class FireBreath : MonoBehaviour
                 }
 
                 if (isCylinder == false){
-                    if (MathsUtils.IsInCone(target.transform.position, transform.position, transform.up, angle, range))
+                    //basic
+                    //if (MathsUtils.IsInCone(target.transform.position, transform.position, transform.up, angle, range))
+                    //pro
+                    if (MathsUtils.IsInConePro(target.transform.position, transform.position, transform.up, angle, range, offset))
                         target.Hit();
                 }else{
                     if (MathsUtils.IsInCylinder(target.transform.position, transform.position, transform.up, radius, range))
