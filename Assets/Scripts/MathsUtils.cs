@@ -1,11 +1,16 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Audio;
+using static UnityEditor.PlayerSettings;
 using static UnityEngine.GraphicsBuffer;
 
 public class MathsUtils : MonoBehaviour {
-    // return true if the point is on the right side of the given Transform
+
+    public float rotationSpeed;
+    // return true if the point is on the right side of the given Transfor,
     public static bool IsOnLeft(Transform user, Vector3 point) {
         // use the dot product
         Vector3 dir = (point - user.position).normalized;
@@ -147,17 +152,30 @@ public class MathsUtils : MonoBehaviour {
         // this can be done in one line of code.
         // consider all the ways of setting rotation in Unity's Transform class
 
+        //user.LookAt(target);
+
+        user.rotation = Quaternion.LookRotation((target - user.position).normalized);
+
+        
+        ////get the vector to the user
+        //Vector3 toUser = target - user.forward;
+
+        ////calculate the angle to
+        //float angle = (-(Mathf.Atan2(target.z, target.x) - Mathf.Atan2(user.forward.z, user.forward.x))) * 180 / Mathf.PI; ;
+        //user.transform.Rotate(0, angle, 0);
     }
 
-    public static void FollowDelayed(Transform user, Vector3 target, float speed) {
-        // find the forward vector we want
+    public static void FollowDelayed(Transform user, Vector3 target, float speed) { 
 
+        // find the forward vector we want
+        Vector3 toTarget = (target - user.position).normalized;
 
         // get the quaternion corresponding to that forward vector
+        Quaternion rotation = Quaternion.LookRotation(toTarget);
 
         // move towards it at a steady speed. Vector3.MoveTowards is great for positions. 
         // See if Quaternions have something similar
-
+        user.rotation = Quaternion.Slerp(user.rotation, rotation, Time.deltaTime * speed);
     }
 
     public static void FollowImmediateHorizontal(Transform user, Vector3 target) {
@@ -166,19 +184,33 @@ public class MathsUtils : MonoBehaviour {
         // zero the rotation around x and z so we're just left with rotation around y
         // is this a job for rotation, eulerANgles or the various axes Vector3s?
 
+        // find the forward vector we want
+        Vector3 toTarget = (target - user.position).normalized;
+        //0 the x and z
+        //toTarget.x = 0; toTarget.z = 0; toTarget.y = Mathf.Atan(toTarget.y) * 180 / Mathf.PI;
+
+        float angle = Mathf.Atan2(toTarget.x, toTarget.z) * 180 / Mathf.PI; 
+
+        //rotate to face the target
+        user.eulerAngles = new Vector3(0, angle, 0);
+
     }
 
     public static void FollowDelayedHorizontal(Transform user, Vector3 target, float speed) {
 
         // get the desired rotation around y using a trig helper function we've already used
         // to turn x and z into an angle
-
+        Vector3 toTarget = (target - user.position).normalized;
+        float angleTo = Mathf.Atan2(toTarget.x, toTarget.z) * 180 / Mathf.PI;
         // get the current euler angles
+        float currentEulerY = user.eulerAngles.y;
 
         // use a maths helper function that wraps us nicely around the 360 degrees boundary
         // its another 'MoveTowards' type function in Mathf namespace
+        float angle = Mathf.LerpAngle(currentEulerY, angleTo, speed * Time.deltaTime);
 
         // set the current euler angles appropriately 
+        user.eulerAngles = new Vector3(0, angle, 0);
     }
 
 
